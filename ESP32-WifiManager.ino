@@ -9,7 +9,7 @@
    Una vez conectados al ESP, podremos configurar la wifi y desaparecerá el portal
 
    Para borrar la Wifi configurada se puede hacer un puente entre el pin establecido en 
-   PIN_RESET_BUTTON y 3.3V
+   PIN_RESET_BUTTON y GND
    
 */
 
@@ -33,19 +33,21 @@ void InitWifi(WiFiManager *wm)
 
 int main()
 {
-  int reset = 0; 
-  pinMode(PIN_RESET_BUTTON, INPUT);
+  int resetButton = 1; 
+  pinMode(PIN_RESET_BUTTON, INPUT_PULLUP);
   
   WiFiManager wm;
 
   Serial.begin(115200);
   InitWifi(&wm);
 
-  while (1) {
-    //reset WiFi Settings from PIN_RESET_BUTTONin to 3.3V 
-    reset = digitalRead(PIN_RESET_BUTTON);
-    if ( reset == HIGH) {
-      Serial.println("Erase settings and restart ...");
+  while (1) 
+  {
+    //reset WiFi Settings from PIN_RESET_BUTTON 
+    resetButton = digitalRead(PIN_RESET_BUTTON);
+    if ( resetButton == LOW ) 
+    {
+      Serial.println("Erase WiFi settings and restart ...");
       wm.resetSettings();
       ESP.restart();
     }
